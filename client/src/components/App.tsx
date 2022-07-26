@@ -11,8 +11,10 @@ const App = () => {
   return (
     <ChakraProvider>
       <div className='App'>
-        <Container>
-          <Heading textAlign='center'>Six Card Golf</Heading>
+        <Container mt='20'>
+          <Heading textAlign='center' mb='20'>
+            Six Card Golf
+          </Heading>
           <EntryForm />
         </Container>
       </div>
