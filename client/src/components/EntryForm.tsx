@@ -10,6 +10,7 @@ import {
   Tabs,
   TabList,
   Tab,
+  Divider,
   Alert,
 } from '@chakra-ui/react'
 
@@ -37,6 +38,10 @@ const EntryForm = () => {
   const handleCreateGame = () => {
     console.log('create game')
     validateName()
+  }
+
+  const handleJoinRandomGame = () => {
+    console.log('join random game')
   }
 
   const handleJoinGame = () => {
@@ -90,6 +95,17 @@ const EntryForm = () => {
       <Button colorScheme='cyan' fontWeight='bold' onClick={handleCreateGame}>
         CREATE NEW GAME
       </Button>
+
+      <Button
+        colorScheme='cyan'
+        fontWeight='bold'
+        isDisabled
+        onClick={handleJoinRandomGame}
+      >
+        JOIN RANDOM GAME
+      </Button>
+
+      <Divider height={3} />
 
       <FormControl>
         <FormLabel fontWeight='bold' color='gray'>
