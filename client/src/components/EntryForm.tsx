@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react'
 
 import { person, key } from '../icons'
+import NewGameButton from './NewGameButton'
 
 const EntryForm = () => {
   const [name, setName] = useState<string>('')
@@ -22,8 +23,7 @@ const EntryForm = () => {
   const [roomCode, setRoomCode] = useState<string>('')
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
-    if (value.length < 10) setName(value)
+    setName(event.target.value)
   }
 
   const handleAvatarChange = (index: number) => {
@@ -33,11 +33,6 @@ const EntryForm = () => {
   const handleCodeChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
     setRoomCode(value)
-  }
-
-  const handleCreateGame = () => {
-    console.log('create game')
-    validateName()
   }
 
   const handleJoinRandomGame = () => {
@@ -65,7 +60,12 @@ const EntryForm = () => {
         </FormLabel>
         <InputGroup>
           <InputLeftElement children={person} />
-          <Input onChange={handleNameChange} value={name} />
+          <Input
+            onChange={handleNameChange}
+            value={name}
+            minLength={1}
+            maxLength={6}
+          />
         </InputGroup>
       </FormControl>
 
@@ -92,9 +92,7 @@ const EntryForm = () => {
         </Tabs>
       </FormControl>
 
-      <Button colorScheme='cyan' fontWeight='bold' onClick={handleCreateGame}>
-        CREATE NEW GAME
-      </Button>
+      <NewGameButton />
 
       <Button
         colorScheme='cyan'
