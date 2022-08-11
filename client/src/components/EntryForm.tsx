@@ -16,6 +16,7 @@ import {
 
 import { person, key } from '../icons'
 import NewGameButton from './NewGameButton'
+import { joinRoom } from '../features/socket'
 
 const EntryForm = () => {
   const [name, setName] = useState<string>('')
@@ -41,7 +42,8 @@ const EntryForm = () => {
 
   const handleJoinGame = () => {
     console.log('join game')
-    validateRoomCode()
+    // validateRoomCode()
+    joinRoom(name, roomCode)
   }
 
   const validateName = () => {
@@ -92,7 +94,7 @@ const EntryForm = () => {
         </Tabs>
       </FormControl>
 
-      <NewGameButton />
+      <NewGameButton name={name} />
 
       <Button
         colorScheme='cyan'
