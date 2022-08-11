@@ -17,7 +17,12 @@ import {
 import { person, key } from '../icons'
 import NewGameButton from './NewGameButton'
 
-const EntryForm = () => {
+type formProps = {
+  createGame: (numHoles: number) => void
+  joinGame: (roomCode: string) => void
+}
+
+const EntryForm = ({ createGame, joinGame }: formProps) => {
   const [name, setName] = useState<string>('')
   const [avatar, setAvatar] = useState<number>(0)
   const [roomCode, setRoomCode] = useState<string>('')
@@ -40,8 +45,7 @@ const EntryForm = () => {
   }
 
   const handleJoinGame = () => {
-    console.log('join game')
-    validateRoomCode()
+    if (validateRoomCode()) joinGame(roomCode)
   }
 
   const validateName = () => {
@@ -50,6 +54,7 @@ const EntryForm = () => {
 
   const validateRoomCode = () => {
     // if room code invalid -> Alert
+    return true
   }
 
   return (
@@ -92,7 +97,7 @@ const EntryForm = () => {
         </Tabs>
       </FormControl>
 
-      <NewGameButton />
+      <NewGameButton createGame={createGame} />
 
       <Button
         colorScheme='cyan'
