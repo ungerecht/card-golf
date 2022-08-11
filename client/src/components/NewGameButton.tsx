@@ -24,7 +24,11 @@ import {
   NumberIncrementStepper,
 } from '@chakra-ui/react'
 
-const NewGameButton = () => {
+type gameButtonProps = {
+  createGame: (numHoles: number) => void
+}
+
+const NewGameButton = ({ createGame }: gameButtonProps) => {
   const [numHoles, setNumHoles] = useState<number>(9)
   const [isPassword, setIsPassword] = useBoolean(false)
   const [showPassword, setShowPassword] = useBoolean(false)
@@ -48,7 +52,7 @@ const NewGameButton = () => {
   }
 
   const handleCreateGame = () => {
-    console.log('create game')
+    createGame(numHoles)
   }
 
   return (
