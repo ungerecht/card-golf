@@ -1,5 +1,8 @@
 import { ChangeEvent, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
+  Container,
+  Heading,
   Input,
   Button,
   Stack,
@@ -11,17 +14,22 @@ import {
   TabList,
   Tab,
   Divider,
-  Alert,
+  useBoolean,
 } from '@chakra-ui/react'
 
 import { person, key } from '../icons'
-import NewGameButton from './NewGameButton'
-import { joinRoom } from '../features/socket'
+import NewGameModal from './NewGameModal'
+import PasswordModal from './PasswordModal'
+import { checkRoom, joinRoom } from '../features/socket'
 
 const EntryForm = () => {
+  let navigate = useNavigate()
   const [name, setName] = useState<string>('')
   const [avatar, setAvatar] = useState<number>(0)
   const [roomCode, setRoomCode] = useState<string>('')
+
+  const [newGameModalOpen, setNewGameModalOpen] = useBoolean(false)
+  const [passWordModalOpen, setPasswordModalOpen] = useBoolean(false)
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value)
@@ -40,86 +48,125 @@ const EntryForm = () => {
     console.log('join random game')
   }
 
-  const handleJoinGame = () => {
+  const handleShowCreateGame = () => {
+    setNewGameModalOpen.on()
+  }
+
+  const handleCloseCreateGame = () => {
+    setNewGameModalOpen.off()
+  }
+
+  const handleJoinGame = async () => {
     console.log('join game')
-    // validateRoomCode()
-    joinRoom(name, roomCode)
-  }
-
-  const validateName = () => {
-    // if no name -> Alert
-  }
-
-  const validateRoomCode = () => {
-    // if room code invalid -> Alert
+    const response = await checkRoom(roomCode)
+    if (response.isRoom) {
+      if (!response.hasPassword) {
+        joinRoom(name, roomCode)
+        // navigate('/lobby')
+      } else {
+        //room has password
+        setPasswordModalOpen.on()
+      }
+    } else {
+      console.log('invalid room code')
+    }
   }
 
   return (
-    <Stack direction='column' spacing={3}>
-      <FormControl>
-        <FormLabel fontWeight='bold' color='gray'>
-          Player Name
-        </FormLabel>
-        <InputGroup>
-          <InputLeftElement children={person} />
-          <Input
-            onChange={handleNameChange}
-            value={name}
-            minLength={1}
-            maxLength={6}
-          />
-        </InputGroup>
-      </FormControl>
+    <Container mt='20'>
+      <Heading textAlign='center' mb='20'>
+        Six Card Golf
+      </Heading>
+      <Stack direction='column' spacing={3}>
+        <FormControl>
+          <FormLabel fontWeight='bold' color='gray'>
+            Player Name
+          </FormLabel>
+          <InputGroup>
+            <InputLeftElement children={person} />
+            <Input
+              onChange={handleNameChange}
+              value={name}
+              minLength={1}
+              maxLength={6}
+            />
+          </InputGroup>
+        </FormControl>
 
-      <FormControl>
-        <FormLabel fontWeight='bold' color='gray'>
-          Choose your Avatar
-        </FormLabel>
-        <Tabs
-          variant='soft-rounded'
-          isFitted
-          size='lg'
-          onChange={handleAvatarChange}
+        <FormControl>
+          <FormLabel fontWeight='bold' color='gray'>
+            Choose your Avatar
+          </FormLabel>
+          <Tabs
+            variant='soft-rounded'
+            isFitted
+            size='lg'
+            onChange={handleAvatarChange}
+          >
+            <TabList>
+              <Tab>0</Tab>
+              <Tab>1</Tab>
+              <Tab>2</Tab>
+              <Tab>3</Tab>
+              <Tab>4</Tab>
+              <Tab>5</Tab>
+              <Tab>6</Tab>
+              <Tab>7</Tab>
+            </TabList>
+          </Tabs>
+        </FormControl>
+
+        <Button
+          colorScheme='cyan'
+          fontWeight='bold'
+          onClick={handleShowCreateGame}
         >
-          <TabList>
-            <Tab>0</Tab>
-            <Tab>1</Tab>
-            <Tab>2</Tab>
-            <Tab>3</Tab>
-            <Tab>4</Tab>
-            <Tab>5</Tab>
-            <Tab>6</Tab>
-            <Tab>7</Tab>
-          </TabList>
-        </Tabs>
-      </FormControl>
+          CREATE NEW GAME
+        </Button>
 
-      <NewGameButton name={name} />
+        <Button
+          colorScheme='cyan'
+          fontWeight='bold'
+          isDisabled
+          onClick={handleJoinRandomGame}
+        >
+          JOIN RANDOM GAME
+        </Button>
 
-      <Button
-        colorScheme='cyan'
-        fontWeight='bold'
-        isDisabled
-        onClick={handleJoinRandomGame}
-      >
-        JOIN RANDOM GAME
-      </Button>
+        <Divider height={3} />
 
-      <Divider height={3} />
+        <FormControl>
+          <FormLabel fontWeight='bold' color='gray'>
+            Room Code
+          </FormLabel>
+          <InputGroup>
+            <InputLeftElement children={key} />
+            <Input
+              onChange={handleCodeChange}
+              value={roomCode}
+              minLength={8}
+              maxLength={8}
+            />
+          </InputGroup>
+        </FormControl>
+        <Button colorScheme='yellow' fontWeight='bold' onClick={handleJoinGame}>
+          JOIN USING CODE
+        </Button>
 
-      <FormControl>
-        <FormLabel fontWeight='bold' color='gray'>
-          Room Code
-        </FormLabel>
-        <InputGroup>
-          <InputLeftElement children={key} />
-          <Input onChange={handleCodeChange} value={roomCode} />
-        </InputGroup>
-      </FormControl>
-      <Button colorScheme='yellow' fontWeight='bold' onClick={handleJoinGame}>
-        JOIN USING CODE
-      </Button>
-    </Stack>
+        <PasswordModal
+          isOpen={passWordModalOpen}
+          name={name}
+          roomCode={roomCode}
+        />
+
+        <NewGameModal
+          isOpen={newGameModalOpen}
+          close={handleCloseCreateGame}
+          name={name}
+          avatar={avatar}
+        />
+      </Stack>
+    </Container>
   )
 }
 
