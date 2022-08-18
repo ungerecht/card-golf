@@ -1,20 +1,18 @@
 import React from 'react'
-
-import { ChakraProvider, Container, Heading } from '@chakra-ui/react'
+import { Routes, Route } from 'react-router-dom'
+import { ChakraProvider } from '@chakra-ui/react'
 
 import EntryForm from './EntryForm'
+import RoomLobby from './RoomLobby'
 
 const App = () => {
   return (
     <ChakraProvider>
-      <div className='App'>
-        <Container mt='20'>
-          <Heading textAlign='center' mb='20'>
-            Six Card Golf
-          </Heading>
-          <EntryForm />
-        </Container>
-      </div>
+      <Routes>
+        <Route path='/' element={<EntryForm />} />
+        <Route path='/lobby' element={<RoomLobby />} />
+        {/* <Route path='/game' element={} /> */}
+      </Routes>
     </ChakraProvider>
   )
 }
